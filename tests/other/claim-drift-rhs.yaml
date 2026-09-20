@@ -1,0 +1,24 @@
+description: |
+  Statement drift on the right-hand side of an equation.
+
+  The export contains `theorem claim_drift : 2 + 2 = 4 := rfl`, exported
+  normally — except that the numeral `4` on the right-hand side of the
+  claimed type has been edited to `5` after export.  The declaration
+  therefore asserts `2 + 2 = 5` while the attached proof is still `rfl`
+  of `2 + 2`.
+
+  A checker that replays the declaration must unfold `2 + 2` to `4` and
+  find that the proof's type does not match the claimed type.  A checker
+  that registers the claimed type without checking the proof term, or
+  that reuses a conversion cache keyed on the (unchanged) statement
+  shape, accepts a proof of a false proposition.  The test exercises the
+  ordinary conversion path (`Nat` literals through `OfNat`, `HAdd` over
+  `instAddNat`) rather than an edge case of the type theory.
+
+# Frozen as a static export file: produced by exporting
+# tests/other/claim-drift.lean under leanprover/lean4:v4.34.0-rc2
+# (lean4export 3.1.0) and editing the single `natVal` node `ie479` from
+# 4 to 5.  The value term is untouched, so the reject must come from the
+# proof/type comparison, not from malformed input.
+file: tests/other/claim-drift-rhs.ndjson
+outcome: reject
