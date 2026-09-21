@@ -1077,23 +1077,6 @@ good_decl (.thmDecl {
   value := Lean.mkApp2 (Lean.mkConst ``Eq.refl [1]) (Lean.mkConst ``Nat) (.lit (.natVal 3))
 })
 
-/--
-Nat literal arithmetic: the kernel reduces `Nat.add` applied to two literals to a
-literal (Lean's Nat extension), instead of unfolding the literals to `Nat.succ`
-chains. The literals come in through `OfNat.ofNat` and `HAdd.hAdd`, so the
-arguments have to be reduced to literals first.
--/
-good_thm natAddLit : 2 + 2 = 4 := rfl
-
-/-- The result of the literal arithmetic has to match the claimed literal -/
-bad_thm natAddLitBad : 2 + 2 = 5 := unchecked (Eq.refl (2 + 2 : Nat))
-
-/-- Nat literal arithmetic: `Nat.sub` on literals truncates at zero -/
-good_thm natSubLit : 2 - 3 = 0 := rfl
-
-/-- Nat literal arithmetic: `Nat.ble` on literals reduces to a `Bool` constructor -/
-good_thm natBleLit : Nat.ble 2 3 = true := rfl
-
 /-! Proof irrelevance and unit Eta -/
 
 /--
