@@ -125,8 +125,13 @@ jobs:
     name: 'Checker: ${{ matrix.checker }}'
     needs: select-checkers
     # Namespace runner: unlike GitHub-hosted runners it exposes a vPMU,
-    # so perf instruction counts work (user-space-only at paranoid=2)
-    runs-on: nscloud-ubuntu-22.04-amd64-8x16
+    # so perf instruction counts work (user-space-only at paranoid=2).
+    # Forks have no Namespace Cloud account, so the nscloud label matches no
+    # runner there and every checker job queues until it times out. Fall back
+    # to a GitHub-hosted runner outside the upstream org; the "Check perf
+    # support" step below records why instruction counts are then absent, and
+    # correctness results are unaffected (only perf telemetry degrades).
+    runs-on: ${{ github.repository_owner == 'leanprover' && 'nscloud-ubuntu-22.04-amd64-8x16' || 'ubuntu-latest' }}
     timeout-minutes: 360
     strategy:
       fail-fast: false
